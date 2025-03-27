@@ -1,8 +1,7 @@
-
 # Set variables
-name="REFace"
-device=2
-CKPT="models/REFace/checkpoints/last.ckpt"
+name="REFace4"
+device=0
+CKPT="models/REFace/2025-03-20T00-06-15_train/checkpoints/last.ckpt"
 
 ## CelebA ##
 Results_dir="results/CelebA/${name}"
@@ -35,9 +34,3 @@ CUDA_VISIBLE_DEVICES=${device} python scripts/inference_test_bench.py \
     --device_ID ${device} \
     --dataset "FFHQ" \
     --ddim_steps 50
-
-
-    
-
-
-

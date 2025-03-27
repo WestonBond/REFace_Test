@@ -7,7 +7,9 @@ Results_out="examples/FaceSwap/${name}/results/results"
 device=6
 
 CONFIG="models/REFace/configs/project_ffhq.yaml"
-CKPT="models/REFace/checkpoints/saved.ckpt"
+#CKPT="models/REFace/checkpoints/saved.ckpt"
+CKPT="models/REFace/last.ckpt"
+
 
 #change this
 target_path="examples/FaceSwap/One_target"  

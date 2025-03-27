@@ -10,7 +10,7 @@ device=0
 
 Write_results="Quantitative_Analysis/FFHQ"
 declare -a names=(  
-                    results/REFace/FFHQ/results
+                    results/FFHQ/REFace4/results
                     # "other_swappers/MegaFs/FFHQ_outs"
                     # "other_swappers/hififace/FFHQ_results"
                     # "e4s/Results/testbench/results_on_FFHQ_orig_ckpt/results"                
@@ -86,7 +86,7 @@ target_mask_path="dataset/FaceData/CelebAMask-HQ/target_mask"
 Dataset_path="dataset/FaceData/CelebAMask-HQ/CelebA-HQ-img"
 
 declare -a names=(  
-                    results/REFace/CelebA/results
+                    results/CelebA/REFace4/results
                     )
 
 for name in "${names[@]}"

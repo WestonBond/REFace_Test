@@ -23,6 +23,7 @@ import socket
 from pytorch_lightning.plugins.environments import ClusterEnvironment,SLURMEnvironment
 import wandb
 
+print("CUDA_VISIBLE_DEVICES:", os.environ.get("CUDA_VISIBLE_DEVICES"))
 
 def get_parser(**parser_kwargs):
     def str2bool(v):
@@ -518,7 +519,7 @@ if __name__ == "__main__":
         print("using nodes:", trainer_config["num_nodes"])
         trainer_config["accelerator"] = "gpu"
         trainer_config["strategy"] = "ddp"
-        trainer_config["gpus"] = "0, 1, 2, 3"
+        trainer_config["gpus"] = "0,1,2,3"
         cpu = False
     else:
         gpuinfo = trainer_config["gpus"]
@@ -536,6 +537,7 @@ if __name__ == "__main__":
 
     # model
     model = instantiate_from_config(config.model)
+    #breakpoint()
     if not opt.resume:
         if opt.train_from_scratch:
             ckpt_file=torch.load(opt.pretrained_model,map_location='cpu')['state_dict']
@@ -543,7 +545,7 @@ if __name__ == "__main__":
             model.load_state_dict(ckpt_file,strict=False)
             print("Train from scratch!")
         else:
-            model.load_state_dict(torch.load(opt.pretrained_model,map_location='cpu')['state_dict'],strict=False)
+            model.load_state_dict(torch.load(opt.pretrained_model,map_location='cpu', weights_only=False)['state_dict'],strict=False)
             print("Load Stable Diffusion v1-4!")
     
     # Train_names=['attn1']
@@ -584,7 +586,7 @@ if __name__ == "__main__":
             }
         },
     }
-    default_logger_cfg = default_logger_cfgs["testtube"]
+    default_logger_cfg = default_logger_cfgs["wandb"]
     if "logger" in lightning_config:
         logger_cfg = lightning_config.logger
     else:
@@ -620,7 +622,7 @@ if __name__ == "__main__":
     # add callback which sets up log directory
     default_callbacks_cfg = {
         "setup_callback": {
-            "target": "main.SetupCallback",
+            "target": "main_swap.SetupCallback",
             "params": {
                 "resume": opt.resume,
                 "now": now,
@@ -632,7 +634,7 @@ if __name__ == "__main__":
             }
         },
         "image_logger": {
-            "target": "main.ImageLogger",
+            "target": "main_swap.ImageLogger",
             "params": {
                 "batch_frequency": 500,
                 "max_images": 4,
@@ -640,14 +642,14 @@ if __name__ == "__main__":
             }
         },
         "learning_rate_logger": {
-            "target": "main.LearningRateMonitor",
+            "target": "pytorch_lightning.callbacks.LearningRateMonitor",
             "params": {
                 "logging_interval": "step",
                 # "log_momentum": True
             }
         },
         "cuda_callback": {
-            "target": "main.CUDACallback"
+            "target": "main_swap.CUDACallback"
         },
     }
     if version.parse(pl.__version__) >= version.parse('1.4.0'):
